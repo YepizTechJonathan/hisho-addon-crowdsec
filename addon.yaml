@@ -1,0 +1,23 @@
+# CrowdSec integration: one entry per CrowdSec install, reached through a Servers (SSH) entry.
+# Shows what it blocks (bans, web-firewall blocks), the bouncer that enforces them, and whether it's
+# still reading logs, so protection can't silently stop again (it had, until 2026-10-19).
+name: crowdsec
+kind: integration
+title: CrowdSec
+description: Bot and attack blocking in front of your sites, and proof it's still working.
+version: 0.1.1
+you_need:
+  - "CrowdSec running in Docker on a server you have"
+  - "That server set up in the Servers (SSH) add-on"
+provider: provider.py
+entry_label: CrowdSec install
+requires:
+  addons: [server]
+entry_schema:
+  server: str              # the Servers (SSH) entry it runs on
+  container: "str?"        # docker container name, default crowdsec
+  note: "str?"
+entry_form:
+  server: "Server (its name on the Servers (SSH) page, e.g. offsite)"
+  container: "Container name (empty = crowdsec)"
+  note: "Note"
