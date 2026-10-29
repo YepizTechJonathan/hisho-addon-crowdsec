@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- The Add box says it looks on the servers Hisho knows (never a network search), and with none, says to add the server first, with a button to Servers (SSH).
+
 ## 0.2.0
 
 - Find it: the page lists CrowdSec containers (any name, image `crowdsecurity/crowdsec`) on the servers the Servers (SSH) add-on knows, one quick `docker ps` per server (`sudo -n` where the server says so); Use this fills in server and container. Installs already added and servers that don't answer aren't listed.

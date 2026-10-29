@@ -5,7 +5,7 @@ name: crowdsec
 kind: integration
 title: CrowdSec
 description: Bot and attack blocking in front of your sites, and proof it's still working.
-version: 0.2.0
+version: 0.2.1
 you_need:
   - "CrowdSec running in Docker on a server you have"
   - "That server set up in the Servers (SSH) add-on"
@@ -33,3 +33,10 @@ help:
     get_label: How to list containers
   note:
     say: "Anything that helps you remember this install, like which sites it protects."
+
+# Found: CrowdSec is looked for on the servers Hisho already knows (Servers (SSH): at home or a VPS), never by
+# scanning the network
+find:
+  title: "On the servers Hisho knows"
+  empty: "No CrowdSec found on the servers Hisho knows. Add the server it runs on first (at home or on the internet, any server you reach over SSH), then look again."
+  link: {label: "Open Servers (SSH)", href: "#/addons/server"}
