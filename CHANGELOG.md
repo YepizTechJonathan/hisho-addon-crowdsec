@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0
+
+- Find it: the page lists CrowdSec containers (any name, image `crowdsecurity/crowdsec`) on the servers the Servers (SSH) add-on knows, one quick `docker ps` per server (`sudo -n` where the server says so); Use this fills in server and container. Installs already added and servers that don't answer aren't listed.
+
 ## 0.1.2
 
 - Every field on its setup form says in plain words what it is, and links to where to get it (addon.yaml `help:`, shown by Hisho's dashboard).

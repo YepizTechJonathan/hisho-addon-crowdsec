@@ -5,7 +5,7 @@ name: crowdsec
 kind: integration
 title: CrowdSec
 description: Bot and attack blocking in front of your sites, and proof it's still working.
-version: 0.1.2
+version: 0.2.0
 you_need:
   - "CrowdSec running in Docker on a server you have"
   - "That server set up in the Servers (SSH) add-on"
@@ -25,10 +25,10 @@ entry_form:
 help:
   server:
     label: Server
-    say: "The name you gave this server on the Servers (SSH) page. Any server Hisho can reach over SSH counts, at home or on the internet. Add it there first."
+    say: "The name you gave this server on the Servers (SSH) page. Any server Hisho can reach over SSH counts, at home or on the internet. Add it there first; then this page lists the CrowdSec installs it finds on your servers, and Use this fills this in."
   container:
     label: Container name
-    say: "The name of the Docker container CrowdSec runs in. Leave it empty if it is called crowdsec. On the server, docker ps lists the names."
+    say: "The name of the Docker container CrowdSec runs in. Leave it empty if it is called crowdsec. Use this fills it in for an install Hisho found; otherwise docker ps on the server lists the names."
     get: "https://docs.docker.com/reference/cli/docker/container/ls/"
     get_label: How to list containers
   note:

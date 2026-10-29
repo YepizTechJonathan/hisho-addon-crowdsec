@@ -35,8 +35,11 @@ Its card says whether CrowdSec is still reading logs and how much it blocked tod
 
 ## Settings
 
-Needs the Servers (SSH) add-on with an entry for the server CrowdSec runs on. Then add a CrowdSec
-install on its page: the server's name on the Servers (SSH) page and, if it isn't `crowdsec`, the
+Needs the Servers (SSH) add-on with an entry for the server CrowdSec runs on. Its page then lists the CrowdSec
+installs it finds on those servers (any container made from the `crowdsecurity/crowdsec` image, asked with one
+`docker ps` per server, with `sudo -n` where that server has **Use sudo** on); **Use this** fills in the server
+and container, and **Add** tests and saves it. Ones already added aren't listed; a server that doesn't answer
+just isn't. To add one by hand: the server's name on the Servers (SSH) page and, if it isn't `crowdsec`, the
 Docker container's name. Entries are kept in `~/Hisho/System/Config/Addons/crowdsec.yaml`.
 
 ## How to remove

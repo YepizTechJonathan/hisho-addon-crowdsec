@@ -3,9 +3,11 @@ the Servers (SSH) integration's connection (same pinned host key)."""
 from __future__ import annotations
 
 import json
+import re
 import shlex
 import subprocess
 import time
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from typing import Any
 
@@ -21,6 +23,52 @@ def _server(entry: dict[str, Any]) -> tuple[Any, dict[str, Any]]:
     if target is None:
         raise RuntimeError(f"no server named {entry['server']} on the Servers (SSH) page")
     return addons.provider(srv), target
+
+
+IMAGE_RE = re.compile(r"(^|/)crowdsecurity/crowdsec(:|@|$)")
+LIST = "docker ps --format '{{.Names}} {{.Image}}'"
+
+
+def _containers_on(target: dict[str, Any], mod: Any, ctx: Any) -> list[str]:
+    """Names of the running containers made from the CrowdSec image on one server ([] when it can't be asked)."""
+    cmd = mod._ssh_args(target) + [("sudo -n " if target.get("sudo") else "") + LIST]
+    try:
+        res = ctx.run(cmd, timeout=15) if hasattr(ctx, "run") else \
+            subprocess.run(cmd, capture_output=True, text=True, timeout=15)
+    except (OSError, subprocess.SubprocessError):
+        return []
+    if res.returncode != 0:
+        return []
+    out = []
+    for line in (res.stdout or "").splitlines():
+        name, _, image = line.strip().partition(" ")
+        if name and IMAGE_RE.search(image.strip()):
+            out.append(name)
+    return out
+
+
+def discover(entries: dict[str, dict[str, Any]], ctx: Any) -> list[dict[str, Any]]:
+    """Find it: CrowdSec containers on the servers the Servers (SSH) add-on knows, minus ones already added.
+    One quick ``docker ps`` per server, all at once; a server that doesn't answer just isn't listed."""
+    from hisho import addons
+    try:
+        srv = addons.get("server")
+        mod, targets = addons.provider(srv), addons.entries(srv)
+    except Exception:  # noqa: BLE001 -- no Servers (SSH) add-on: nothing to look through
+        return []
+    have = {(str(e.get("server")), str(e.get("container") or "crowdsec")) for e in (entries or {}).values()}
+    names = [n for n, t in targets.items() if t and t.get("host") and t.get("user")]
+    with ThreadPoolExecutor(max_workers=min(16, len(names) or 1)) as pool:
+        found = dict(zip(names, pool.map(lambda n: _containers_on(targets[n], mod, ctx), names)))
+    out = []
+    for server in names:
+        for c in found[server]:
+            if (server, c) in have:
+                continue
+            out.append({"title": f"CrowdSec on {server} (container {c})",
+                        "name": server if c == "crowdsec" else f"{server}-{c}",
+                        "fill": {"server": server, "container": c}})
+    return out
 
 
 def read(entry: dict[str, Any]) -> dict[str, Any]:
